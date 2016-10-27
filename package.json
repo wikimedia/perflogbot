@@ -1,0 +1,24 @@
+{
+  "name": "perflogbot",
+  "version": "0.0.1",
+  "description": "Log changes to ResourceLoader module manifest to IRC",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://phabricator.wikimedia.org/diffusion/1998/tool-perflogbot.git"
+  },
+  "keywords": [
+    "irc",
+    "bot",
+    "wikimedia"
+  ],
+  "author": "Ori Livneh",
+  "license": "ISC",
+  "dependencies": {
+    "irc": "~0.5.0",
+    "moment": "~2.15.2"
+  }
+}
