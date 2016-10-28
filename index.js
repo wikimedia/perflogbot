@@ -4,7 +4,7 @@ var https = require( 'https' ),
 	util = require( 'util' ),
 	irc = require( 'irc' ),
 	moment = require('moment'),
-	config = require( './config.json' ),
+	config = require( 'config' ),
 	bot = new irc.Client(
 		config.server,
 		config.botName,
