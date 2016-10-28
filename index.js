@@ -57,9 +57,10 @@ function bold( text ) {
 
 function handleModuleManifest( manifest ) {
 	var currentTime = moment.utc(),
-		messages = [];
+		messages = [],
+		firstRun = Object.keys( versions ).length === 0;
 
-	manifest.forEach ( function ( descriptor ) {
+	manifest.forEach( function ( descriptor ) {
 		var module = descriptor[0],
 			currentVersion = descriptor[1],
 			previousVersion = versions[ module ],
@@ -80,10 +81,11 @@ function handleModuleManifest( manifest ) {
 		messages = [ bold( messages.length ) + ' modules changed state.' ];
 	}
 
-	messages.forEach( function ( message ) {
-		console.log( message );
-		config.options.channels.forEach( function ( channel ) {
-			bot.say( channel, message );
+	if ( !firstRun ) {
+		messages.forEach( function ( message ) {
+			config.options.channels.forEach( function ( channel ) {
+				bot.say( channel, message );
+			} );
 		} );
-	} );
+	}
 }
