@@ -19,9 +19,17 @@ var https = require( 'https' ),
 	times = {};
 
 
-bot.addListener( 'names', function () {
-	fetchModuleManifest();
+bot.once( 'names', function () {
 	setInterval( fetchModuleManifest, 10 * 1000 );
+
+	// Every thirty seconds, check that the bot is operating under its canonical
+	// nickname, and attempt to regain it if not. (NickServ's "regain" command
+	// will modify the bot's nickname, if successful.)
+	setInterval( function () {
+		if ( bot.nick !== config.botName ) {
+			bot.say( 'NickServ', 'regain ' + config.botName );
+		}
+	}, 30 * 1000 );
 } );
 
 function fetchModuleManifest() {
