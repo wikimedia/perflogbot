@@ -3,7 +3,7 @@
 var https = require( 'https' ),
 	util = require( 'util' ),
 	irc = require( 'irc' ),
-	timeago = require('timeago.js'),
+	moment = require('moment'),
 	config = require( 'config' ),
 	bot = new irc.Client(
 		config.server,
@@ -60,7 +60,7 @@ function bold( text ) {
 }
 
 function handleModuleManifest( manifest ) {
-	var currentTime = new Date().getTime(),
+	var currentTime = moment.utc(),
 		messages = [],
 		firstRun = Object.keys( versions ).length === 0;
 
@@ -70,15 +70,16 @@ function handleModuleManifest( manifest ) {
 			previousVersion = versions[ module ],
 			previousTime = times[ module ];
 
-		if ( previousVersion === undefined ) {
-			messages.push( util.format( '%s: %s (new module)', bold( module ), currentVersion ) );
-		} else if ( currentVersion !== previousVersion ) {
-			messages.push( util.format( '%s: %s => %s (after %s)', bold( module ), previousVersion,
-				currentVersion, timeago().format( previousTime ).replace( / ago$/, '' ) ) );
+		if ( currentVersion !== previousVersion ) {
+			if ( previousVersion === undefined ) {
+				messages.push( util.format( '%s: %s (new module)', bold( module ), currentVersion ) );
+			} else {
+				messages.push( util.format( '%s: %s => %s (after %s)', bold( module ),
+					previousVersion, currentVersion, previousTime.from( currentTime, true ) ) );
+			}
+			versions[ module ] = currentVersion;
+			times[ module ] = currentTime;
 		}
-
-		versions[ module ] = currentVersion;
-		times[ module ] = currentTime;
 	} );
 
 	if ( messages.length > 15 ) {
