@@ -3,7 +3,7 @@
 var https = require( 'https' ),
 	util = require( 'util' ),
 	irc = require( 'irc' ),
-	moment = require('moment'),
+	timeago = require('timeago.js'),
 	config = require( 'config' ),
 	bot = new irc.Client(
 		config.server,
@@ -44,7 +44,11 @@ function fetchModuleManifest() {
 				body.indexOf( 'register(' ) + 'register('.length,
 				body.indexOf( ');;' )
 			);
-			handleModuleManifest( JSON.parse( body ) );
+			try {
+				handleModuleManifest( JSON.parse( body ) );
+			} catch ( e ) {
+				console.error( e );
+			}
 		} );
 	} );
 
@@ -56,7 +60,7 @@ function bold( text ) {
 }
 
 function handleModuleManifest( manifest ) {
-	var currentTime = moment.utc(),
+	var currentTime = new Date().getTime(),
 		messages = [],
 		firstRun = Object.keys( versions ).length === 0;
 
@@ -70,7 +74,7 @@ function handleModuleManifest( manifest ) {
 			messages.push( util.format( '%s: %s (new module)', bold( module ), currentVersion ) );
 		} else if ( currentVersion !== previousVersion ) {
 			messages.push( util.format( '%s: %s => %s (after %s)', bold( module ), previousVersion,
-				currentVersion, currentTime.from( previousTime, true ) ) );
+				currentVersion, timeago().format( previousTime ).replace( / ago$/, '' ) ) );
 		}
 
 		versions[ module ] = currentVersion;
