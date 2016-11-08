@@ -3,7 +3,7 @@
 var https = require( 'https' ),
 	util = require( 'util' ),
 	irc = require( 'irc' ),
-	moment = require('moment'),
+	moment = require( 'moment' ),
 	config = require( 'config' ),
 	bot = new irc.Client(
 		config.server,
@@ -17,43 +17,6 @@ var https = require( 'https' ),
 	},
 	versions = {},
 	times = {};
-
-
-bot.once( 'names', function () {
-	setInterval( fetchModuleManifest, 10 * 1000 );
-
-	// Every thirty seconds, check that the bot is operating under its canonical
-	// nickname, and attempt to regain it if not. (NickServ's "regain" command
-	// will modify the bot's nickname, if successful.)
-	setInterval( function () {
-		if ( bot.nick !== config.botName ) {
-			bot.say( 'NickServ', 'regain ' + config.botName );
-		}
-	}, 30 * 1000 );
-} );
-
-function fetchModuleManifest() {
-	var req = https.request( httpsOptions, function (res ) {
-		var body = '';
-		res.on( 'data', function ( chunk ) {
-			body += chunk;
-		} );
-
-		res.on( 'end', function () {
-			body = body.slice( 
-				body.indexOf( 'register(' ) + 'register('.length,
-				body.indexOf( ');;' )
-			);
-			try {
-				handleModuleManifest( JSON.parse( body ) );
-			} catch ( e ) {
-				console.error( e );
-			}
-		} );
-	} );
-
-	req.end();
-}
 
 function bold( text ) {
 	return '\u0002' + text + '\u0002';
@@ -94,3 +57,39 @@ function handleModuleManifest( manifest ) {
 		} );
 	}
 }
+
+function fetchModuleManifest() {
+	var req = https.request( httpsOptions, function ( res ) {
+		var body = '';
+		res.on( 'data', function ( chunk ) {
+			body += chunk;
+		} );
+
+		res.on( 'end', function () {
+			body = body.slice(
+				body.indexOf( 'register(' ) + 'register('.length,
+				body.indexOf( ');;' )
+			);
+			try {
+				handleModuleManifest( JSON.parse( body ) );
+			} catch ( e ) {
+				console.error( e );
+			}
+		} );
+	} );
+
+	req.end();
+}
+
+bot.once( 'names', function () {
+	setInterval( fetchModuleManifest, 10 * 1000 );
+
+	// Every thirty seconds, check that the bot is operating under its canonical
+	// nickname, and attempt to regain it if not. (NickServ's "regain" command
+	// will modify the bot's nickname, if successful.)
+	setInterval( function () {
+		if ( bot.nick !== config.botName ) {
+			bot.say( 'NickServ', 'regain ' + config.botName );
+		}
+	}, 30 * 1000 );
+} );
