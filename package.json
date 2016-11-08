@@ -4,8 +4,9 @@
   "description": "Log changes to ResourceLoader module manifest to IRC",
   "main": "index.js",
   "scripts": {
-    "test": "eslint .",
-    "fixer": "eslint --fix ."
+    "test": "eslint . && node test.js",
+    "fixer": "eslint --fix .",
+    "start": "node index.js"
   },
   "repository": {
     "type": "git",
@@ -25,6 +26,7 @@
   },
   "devDependencies": {
     "eslint": "^3.9.1",
-    "eslint-config-wikimedia": "^0.2.0"
+    "eslint-config-wikimedia": "^0.2.0",
+    "timekeeper": "^1.0.0"
   }
 }

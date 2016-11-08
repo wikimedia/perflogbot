@@ -1,9 +1,7 @@
 'use strict';
 
 var https = require( 'https' ),
-	util = require( 'util' ),
 	irc = require( 'irc' ),
-	moment = require( 'moment' ),
 	config = require( 'config' ),
 	bot = new irc.Client(
 		config.server,
@@ -15,47 +13,14 @@ var https = require( 'https' ),
 		path: '/w/load.php?modules=startup&only=scripts',
 		rejectUnauthorized: false
 	},
-	versions = {},
-	times = {};
+	handleModuleManifest = require( './utils' ).handle;
 
-function bold( text ) {
-	return '\u0002' + text + '\u0002';
-}
-
-function handleModuleManifest( manifest ) {
-	var currentTime = moment.utc(),
-		messages = [],
-		firstRun = Object.keys( versions ).length === 0;
-
-	manifest.forEach( function ( descriptor ) {
-		var module = descriptor[0],
-			currentVersion = descriptor[1],
-			previousVersion = versions[ module ],
-			previousTime = times[ module ];
-
-		if ( currentVersion !== previousVersion ) {
-			if ( previousVersion === undefined ) {
-				messages.push( util.format( '%s: %s (new module)', bold( module ), currentVersion ) );
-			} else {
-				messages.push( util.format( '%s: %s => %s (after %s)', bold( module ),
-					previousVersion, currentVersion, previousTime.from( currentTime, true ) ) );
-			}
-			versions[ module ] = currentVersion;
-			times[ module ] = currentTime;
-		}
-	} );
-
-	if ( messages.length > 15 ) {
-		messages = [ bold( messages.length ) + ' modules changed state.' ];
-	}
-
-	if ( !firstRun ) {
-		messages.forEach( function ( message ) {
-			config.options.channels.forEach( function ( channel ) {
-				bot.say( channel, message );
-			} );
+function sendBotMessage( messages ) {
+	messages.forEach( function ( message ) {
+		config.options.channels.forEach( function ( channel ) {
+			bot.say( channel, message );
 		} );
-	}
+	} );
 }
 
 function fetchModuleManifest() {
@@ -71,7 +36,7 @@ function fetchModuleManifest() {
 				body.indexOf( ');;' )
 			);
 			try {
-				handleModuleManifest( JSON.parse( body ) );
+				handleModuleManifest( JSON.parse( body ), sendBotMessage );
 			} catch ( e ) {
 				console.error( e );
 			}
