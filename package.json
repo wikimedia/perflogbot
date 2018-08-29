@@ -1,22 +1,11 @@
 {
-  "name": "perflogbot",
-  "version": "0.0.1",
-  "description": "Log changes to ResourceLoader module manifest to IRC",
+  "private": true,
   "main": "index.js",
   "scripts": {
     "test": "eslint . && node test.js",
     "fixer": "eslint --fix .",
     "start": "node index.js"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://phabricator.wikimedia.org/diffusion/1998/tool-perflogbot.git"
-  },
-  "keywords": [
-    "irc",
-    "bot",
-    "wikimedia"
-  ],
   "author": "Ori Livneh",
   "license": "ISC",
   "dependencies": {
