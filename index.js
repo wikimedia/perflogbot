@@ -31,10 +31,8 @@ function fetchModuleManifest() {
 		} );
 
 		res.on( 'end', function () {
-			body = body.slice(
-				body.indexOf( 'register(' ) + 'register('.length,
-				body.indexOf( ');;' )
-			);
+			body = body.slice( body.indexOf( 'register(' ) + 'register('.length );
+			body = body.slice( 0, body.indexOf( ');' ) );
 			try {
 				handleModuleManifest( JSON.parse( body ), sendBotMessage );
 			} catch ( e ) {
