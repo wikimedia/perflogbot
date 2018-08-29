@@ -25,7 +25,7 @@ handle(
 	],
 	function ( messages ) {
 		assert.strictEqual(
-			messages[0],
+			messages[ 0 ],
 			'\u0002test\u0002: aa => ab (after 9 minutes)'
 		);
 	}
@@ -41,15 +41,15 @@ handle(
 	],
 	function ( messages ) {
 		assert.strictEqual(
-			messages[0],
+			messages[ 0 ],
 			'\u0002example\u0002: v1 => v2 (after an hour)'
 		);
 		assert.strictEqual(
-			messages[1],
+			messages[ 1 ],
 			'\u0002test\u0002: ab => bb (after an hour)'
 		);
 		assert.strictEqual(
-			messages[2],
+			messages[ 2 ],
 			'\u0002more\u0002: foo => bar (after an hour)'
 		);
 	}

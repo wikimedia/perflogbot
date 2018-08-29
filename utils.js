@@ -15,8 +15,8 @@ function handleModuleManifest( manifest, write ) {
 		firstRun = Object.keys( versions ).length === 0;
 
 	manifest.forEach( function ( descriptor ) {
-		var module = descriptor[0],
-			currentVersion = descriptor[1],
+		var module = descriptor[ 0 ],
+			currentVersion = descriptor[ 1 ],
 			previousVersion = versions[ module ],
 			previousTime = times[ module ];
 
